@@ -19,7 +19,7 @@
 
    <ctl:suite name="tns:ets-gml32-data-${version}">
      <ctl:title>Conformance Test Suite - GML Documents</ctl:title>
-     <ctl:description>Describe scope of testing.</ctl:description>
+     <ctl:description>Validates the content of a GML 3.2 instance document.</ctl:description>
      <ctl:starting-test>tns:Main</ctl:starting-test>
    </ctl:suite>
  
@@ -30,16 +30,14 @@
            <ctl:form method="POST" width="800" height="600" xmlns="http://www.w3.org/1999/xhtml">
              <h2>Conformance Test Suite - GML Documents</h2>
              <div style="background:#F0F8FF" bgcolor="#F0F8FF">
-               <p>The implementation under test (IUT) is checked against the following specifications:</p>
+               <p>The instance under test (IUT) is checked against the following specifications:</p>
                <ul>
-                 <li><a href="http://www.w3.org/TR/xml/">Extensible Markup Language (XML) 1.0</a>, 
-				 Fifth Edition</li>
-				 <li><a href="http://www.w3.org/TR/xmlbase/">XML Base</a>, Second Edition</li>
+                 <li><a href="http://portal.opengeospatial.org/files/?artifact_id=20509">OpenGIS 
+                 Geography Markup Language (GML) Encoding Standard</a>, Version 3.2.1</li>
                </ul>
-               <p>Two conformance levels are defined:</p>
+               <p>One conformance level is defined:</p>
                <ul>
-                 <li>Level 1</li>
-                 <li>Level 2</li>
+                 <li>GML Document</li>
                </ul>
              </div>
              <fieldset style="background:#ccffff">
@@ -50,20 +48,13 @@
                  <label for="uri">
                    <h4 style="margin-bottom: 0.5em">Location of IUT (absolute http: or file: URI)</h4>
                  </label>
-                 <input id="uri" name="uri" size="128" type="text" value="http://www.w3schools.com/xml/note.xml" />
+                 <input id="uri" name="uri" size="128" type="text" value="http://schemas.geosciml.org/geosciml/4.0/examples/GSML4-Borehole.xml" />
                </p>
                <p>
                  <label for="doc">
                    <h4 style="margin-bottom: 0.5em">Upload IUT</h4>
                  </label>
                  <input name="doc" id="doc" size="128" type="file" />
-               </p>
-               <p>
-                 <label for="level">Conformance class: </label>
-                 <input id="level-1" type="radio" name="level" value="1" checked="checked" />
-                 <label for="level-1"> Level 1 | </label>
-                 <input id="level-2" type="radio" name="level" value="2" />
-                 <label class="form-label" for="level-2"> Level 2</label>
                </p>
              </fieldset>
              <p>
