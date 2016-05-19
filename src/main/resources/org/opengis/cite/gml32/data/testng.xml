@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="${ets-code}-${version}" verbose="0" configfailurepolicy="continue">
+  <parameter name="iut"  value=""/>
+  <parameter name="ics"  value=""/>
+
+  <listeners>
+    <listener class-name="org.opengis.cite.gml32.data.TestRunListener" />
+    <listener class-name="org.opengis.cite.gml32.data.SuiteFixtureListener" />
+    <listener class-name="org.opengis.cite.gml32.data.TestFailureListener" />
+  </listeners>
+
+  <test name="GML Document">
+    <packages>
+      <package name="org.opengis.cite.gml32.data.document" />
+    </packages>
+    <classes>
+      <class name="org.opengis.cite.gml32.data.SuitePreconditions" />
+    </classes>
+  </test>
+</suite>
