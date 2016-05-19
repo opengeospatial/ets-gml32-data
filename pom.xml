@@ -13,7 +13,7 @@
   <packaging>jar</packaging>
 
   <name>Conformance Test Suite - GML Documents</name>
-  <description>Describe purpose of test suite.</description>
+  <description>Validates the content of a GML 3.2 instance document.</description>
   <url>http://opengeospatial.github.io/ets-gml32-data/</url>
   <licenses>
     <license>
@@ -38,9 +38,9 @@
   </issueManagement>
   <developers>
     <developer>
-      <name>Alpha Beta</name>
-      <url>https://github.com/</url>
-      <timezone>UTC</timezone>
+      <name>R. Martell</name>
+      <url>https://github.com/rjmartell</url>
+      <timezone>Canada/Pacific</timezone>
     </developer>
   </developers>
 
