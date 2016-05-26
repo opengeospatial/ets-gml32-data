@@ -21,6 +21,10 @@ public enum SuiteAttribute {
      */
     TEST_SUBJ_URI("testSubjectURI", URI.class),
     /**
+     * A URI that refers to a Schematron schema.
+     */
+    SCHEMATRON_URI("schematronURI", URI.class),
+    /**
      * A File containing the test subject or a description of it.
      */
     TEST_SUBJ_FILE("testSubjectFile", File.class);

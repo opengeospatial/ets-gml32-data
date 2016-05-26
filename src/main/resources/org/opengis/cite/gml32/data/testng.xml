@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suite name="${ets-code}-${version}" verbose="0" configfailurepolicy="continue">
   <parameter name="iut"  value=""/>
-  <parameter name="ics"  value=""/>
+  <parameter name="sch"  value=""/>
 
   <listeners>
     <listener class-name="org.opengis.cite.gml32.data.TestRunListener" />

@@ -3,4 +3,5 @@
 <properties version="1.0">
     <comment>Sample test run arguments</comment>
     <entry key="iut">http://schemas.geosciml.org/geosciml/4.0/examples/GSML4-Borehole.xml</entry>
+    <entry key="sch"/>
 </properties>

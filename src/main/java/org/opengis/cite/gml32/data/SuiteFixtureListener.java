@@ -1,10 +1,15 @@
 package org.opengis.cite.gml32.data;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import org.opengis.cite.gml32.data.util.ClientUtils;
 import org.opengis.cite.gml32.data.util.TestSuiteLogger;
@@ -32,6 +37,7 @@ public class SuiteFixtureListener implements ISuiteListener {
     @Override
     public void onStart(ISuite suite) {
         processSuiteParameters(suite);
+        getSchematronSchema(suite);
         registerClientComponent(suite);
     }
 
@@ -76,6 +82,48 @@ public class SuiteFixtureListener implements ISuiteListener {
     }
 
     /**
+     * Adds a URI reference specifying the location of a Schematron schema; this
+     * may be given by (a) the test run argument {@link TestRunArg#SCH sch}, or
+     * (b) an <code>xml-model</code> processing instruction in the instance
+     * document. The processing instruction takes precedence if both references
+     * are found.
+     * 
+     * <pre>
+    * {@code
+    * <?xml version="1.0" encoding="UTF-8"?>
+    * <?xml-model href="http://www.example.org/constraints.sch" 
+    *             schematypens="http://purl.oclc.org/dsdl/schematron" 
+    *             phase="#ALL"?>
+    * }
+     * </pre>
+     * 
+     * @param suite
+     *            An ISuite object representing a TestNG test suite.
+     */
+    void getSchematronSchema(ISuite suite) {
+        Map<String, String> params = suite.getXmlSuite().getParameters();
+        String schRef = params.get(TestRunArg.SCH.toString());
+        if ((null != schRef) && !schRef.isEmpty()) {
+            suite.setAttribute(SuiteAttribute.SCHEMATRON_URI.getName(), URI.create(schRef));
+        }
+        File gmlFile = (File) suite.getAttribute(SuiteAttribute.TEST_SUBJ_FILE.getName());
+        if (null == gmlFile) {
+            return;
+        }
+        Map<String, String> piData = getXmlModelPIData(gmlFile);
+        if (null != piData) {
+            URI schURI = URI.create(piData.get("href"));
+            if (!schURI.isAbsolute()) {
+                // resolve relative URI against location of GML data
+                String dataURI = suite.getParameter(TestRunArg.IUT.toString());
+                URI baseURI = URI.create(dataURI);
+                schURI = baseURI.resolve(schURI);
+            }
+            suite.setAttribute(SuiteAttribute.SCHEMATRON_URI.getName(), schURI);
+        }
+    }
+
+    /**
      * A client component is added to the suite fixture as the value of the
      * {@link SuiteAttribute#CLIENT} attribute; it may be subsequently accessed
      * via the {@link org.testng.ITestContext#getSuite()} method.
@@ -106,5 +154,46 @@ public class SuiteFixtureListener implements ISuiteListener {
         if (testSubjFile.exists()) {
             testSubjFile.delete();
         }
+    }
+
+    /**
+     * Extracts the data items from the {@code xml-model} processing
+     * instruction. The PI must appear before the document element.
+     * 
+     * @param dataFile
+     *            A File containing the GML instance.
+     * @return A Map containing the supplied pseudo-attributes, or {@code null}
+     *         if the PI is not present.
+     */
+    Map<String, String> getXmlModelPIData(File dataFile) {
+        Map<String, String> piData = null;
+        try (FileInputStream input = new FileInputStream(dataFile)) {
+            // input = new FileInputStream(dataFile);
+            XMLInputFactory factory = XMLInputFactory.newInstance();
+            XMLStreamReader reader = factory.createXMLStreamReader(input);
+            int event = reader.getEventType();
+            // Now in START_DOCUMENT state. Stop at document element.
+            while (event != XMLStreamReader.START_ELEMENT) {
+                event = reader.next();
+                if (event == XMLStreamReader.PROCESSING_INSTRUCTION) {
+                    if (reader.getPITarget().equals("xml-model")) {
+                        String[] pseudoAttrs = reader.getPIData().split("\\s+");
+                        piData = new HashMap<String, String>();
+                        for (String pseudoAttr : pseudoAttrs) {
+                            String[] nv = pseudoAttr.split("=");
+                            piData.put(nv[0].trim(), nv[1].replace('"', ' ').trim());
+                        }
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            TestSuiteLogger.log(Level.WARNING, "Failed to parse document at " + dataFile.getAbsolutePath(), e);
+            return null; // not an XML document
+        }
+        if (null == piData || !piData.get("schematypens").equals(Namespaces.SCH)) {
+            piData = null;
+        }
+        return piData;
     }
 }

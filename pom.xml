@@ -13,7 +13,7 @@
   <packaging>jar</packaging>
 
   <name>Conformance Test Suite - GML Documents</name>
-  <description>Validates the content of a GML 3.2 instance document.</description>
+  <description>Validates a GML 3.2 instance document.</description>
   <url>http://opengeospatial.github.io/ets-gml32-data/</url>
   <licenses>
     <license>

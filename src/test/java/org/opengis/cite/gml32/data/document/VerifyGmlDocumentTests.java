@@ -50,7 +50,7 @@ public class VerifyGmlDocumentTests {
     }
 
     @Test
-    public void validDocument() throws URISyntaxException, SAXException, IOException {
+    public void isXMLSchemaValid() throws URISyntaxException, SAXException, IOException {
         URL url = this.getClass().getResource("/SimpleFeature-1.xml");
         File dataFile = new File(url.toURI());
         when(suite.getAttribute(TEST_FILE)).thenReturn(dataFile);
@@ -58,11 +58,11 @@ public class VerifyGmlDocumentTests {
         GmlDocumentTests iut = new GmlDocumentTests();
         iut.initFixture(testContext);
         iut.hasAppSchemaReference();
-        iut.gmlIsSchemaValid();
+        iut.checkXMLSchemaValidity();
     }
 
     @Test
-    public void invalidDocument() throws URISyntaxException, SAXException, IOException {
+    public void notXMLSchemaValid() throws URISyntaxException, SAXException, IOException {
         thrown.expect(AssertionError.class);
         thrown.expectMessage("2 schema validation error(s) detected");
         URL url = this.getClass().getResource("/SimpleFeature-2.xml");
@@ -72,6 +72,21 @@ public class VerifyGmlDocumentTests {
         GmlDocumentTests iut = new GmlDocumentTests();
         iut.initFixture(testContext);
         iut.hasAppSchemaReference();
-        iut.gmlIsSchemaValid();
+        iut.checkXMLSchemaValidity();
+    }
+
+    @Test
+    public void notSchematronValid() throws Exception {
+        thrown.expect(AssertionError.class);
+        thrown.expectMessage("1 schema validation error(s) detected");
+        URL dataUrl = this.getClass().getResource("/SimpleFeature-xml-model.xml");
+        URL schUrl = this.getClass().getResource("/sch/simple.sch");
+        File dataFile = new File(dataUrl.toURI());
+        when(suite.getAttribute(TEST_FILE)).thenReturn(dataFile);
+        when(suite.getAttribute("testSubjectURI")).thenReturn(dataFile.getParentFile().toURI());
+        when(testContext.getSuite().getAttribute("schematronURI")).thenReturn(schUrl.toURI());
+        GmlDocumentTests iut = new GmlDocumentTests();
+        iut.initFixture(testContext);
+        iut.checkSchematronConstraints(testContext);
     }
 }

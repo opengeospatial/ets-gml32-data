@@ -9,7 +9,12 @@ public enum TestRunArg {
      * An absolute URI that refers to a representation of the test subject or
      * metadata about it.
      */
-    IUT;
+    IUT,
+    /**
+     * A URI that refers to a Schematron schema (ISO 19757-3) that defines
+     * supplementary data constraints.
+     */
+    SCH;
 
     @Override
     public String toString() {

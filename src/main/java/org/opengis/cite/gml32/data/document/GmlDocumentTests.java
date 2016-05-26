@@ -12,6 +12,8 @@ import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -22,9 +24,12 @@ import org.opengis.cite.gml32.data.ErrorMessage;
 import org.opengis.cite.gml32.data.ErrorMessageKeys;
 import org.opengis.cite.gml32.data.SuiteAttribute;
 import org.opengis.cite.gml32.data.util.ValidationUtils;
+import org.opengis.cite.gml32.data.util.XMLUtils;
+import org.opengis.cite.validation.SchematronValidator;
 import org.opengis.cite.validation.ValidationErrorHandler;
 import org.opengis.cite.validation.XmlSchemaCompiler;
 import org.testng.ITestContext;
+import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
@@ -110,7 +115,7 @@ public class GmlDocumentTests extends CommonFixture {
      *             If the resource is not accessible.
      */
     @Test(description = "See ATC: A.3.4", dependsOnMethods = "hasAppSchemaReference")
-    public void gmlIsSchemaValid() throws SAXException, IOException {
+    public void checkXMLSchemaValidity() throws SAXException, IOException {
         Validator validator = this.appSchema.newValidator();
         ValidationErrorHandler errHandler = new ValidationErrorHandler();
         validator.setErrorHandler(errHandler);
@@ -124,4 +129,38 @@ public class GmlDocumentTests extends CommonFixture {
         assertFalse(errHandler.errorsDetected(), ErrorMessage.format(ErrorMessageKeys.NOT_SCHEMA_VALID,
                 errHandler.getErrorCount(), errHandler.toString()));
     }
+
+    /**
+     * Verify that the GML document satisfies the additional constraints defined
+     * in a Schematron schema. All phases are active.
+     * 
+     * <p style="margin-bottom: 0.5em">
+     * <strong>Sources</strong>
+     * </p>
+     * <ul>
+     * <li><a href=
+     * "http://standards.iso.org/ittf/PubliclyAvailableStandards/c040833_ISO_IEC_19757-3_2006(E).zip"
+     * >ISO 19757-3:2006</a></li>
+     * <li><a href="http://www.w3.org/TR/xml-model/">Associating Schemas with
+     * XML documents 1.0 (Second Edition)</a></li>
+     * </ul>
+     * 
+     * @throws Exception
+     *             If the Schematron schema cannot be read for some reason.
+     * 
+     */
+    @Test(description = "ISO 19757-3")
+    public void checkSchematronConstraints(ITestContext testContext) throws Exception {
+        Object schRef = testContext.getSuite().getAttribute(SuiteAttribute.SCHEMATRON_URI.getName());
+        if (null == schRef) {
+            throw new SkipException("No Schematron schema reference found.");
+        }
+        Source schema = new StreamSource(schRef.toString());
+        SchematronValidator validator = new SchematronValidator(schema, null);
+        Source gmlSource = new StreamSource(this.gmlDataFile);
+        DOMResult result = validator.validate(gmlSource);
+        assertFalse(validator.ruleViolationsDetected(), ErrorMessage.format(ErrorMessageKeys.NOT_SCHEMA_VALID,
+                validator.getRuleViolationCount(), XMLUtils.writeNodeToString(result.getNode())));
+    }
+
 }
