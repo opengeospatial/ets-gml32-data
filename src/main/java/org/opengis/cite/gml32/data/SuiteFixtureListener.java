@@ -191,7 +191,7 @@ public class SuiteFixtureListener implements ISuiteListener {
             TestSuiteLogger.log(Level.WARNING, "Failed to parse document at " + dataFile.getAbsolutePath(), e);
             return null; // not an XML document
         }
-        if (null == piData || !piData.get("schematypens").equals(Namespaces.SCH)) {
+        if (null == piData || !piData.get("schematypens").equals(Namespaces.SCH.toString())) {
             piData = null;
         }
         return piData;

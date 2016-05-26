@@ -1,5 +1,6 @@
 package org.opengis.cite.gml32.data;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,9 +63,17 @@ public class VerifySuiteFixtureListener {
         when(xmlSuite.getParameters()).thenReturn(params);
         SuiteFixtureListener iut = new SuiteFixtureListener();
         iut.onStart(suite);
-        verify(suite).setAttribute(
-                Matchers.eq(SuiteAttribute.TEST_SUBJ_FILE.getName()), 
-                Matchers.isA(File.class));
+        verify(suite).setAttribute(Matchers.eq(SuiteAttribute.TEST_SUBJ_FILE.getName()), Matchers.isA(File.class));
+    }
+
+    @Test
+    public void getXmlModelPI() throws URISyntaxException {
+        URL url = this.getClass().getResource("/SimpleFeature-xml-model.xml");
+        File dataFile = new File(url.toURI());
+        SuiteFixtureListener iut = new SuiteFixtureListener();
+        Map<String, String> piData = iut.getXmlModelPIData(dataFile);
+        assertNotNull("No PI found.", piData);
+        assertEquals("Unexpected href value.", "./sch/simple.sch", piData.get("href"));
     }
 
 }

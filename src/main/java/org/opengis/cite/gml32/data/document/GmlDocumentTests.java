@@ -145,6 +145,8 @@ public class GmlDocumentTests extends CommonFixture {
      * XML documents 1.0 (Second Edition)</a></li>
      * </ul>
      * 
+     * @param testContext
+     *            Information about the test run
      * @throws Exception
      *             If the Schematron schema cannot be read for some reason.
      * 
@@ -153,7 +155,7 @@ public class GmlDocumentTests extends CommonFixture {
     public void checkSchematronConstraints(ITestContext testContext) throws Exception {
         Object schRef = testContext.getSuite().getAttribute(SuiteAttribute.SCHEMATRON_URI.getName());
         if (null == schRef) {
-            throw new SkipException("No Schematron schema reference found.");
+            throw new SkipException("No Schematron schema reference for data resource at " + this.gmlDataUri);
         }
         Source schema = new StreamSource(schRef.toString());
         SchematronValidator validator = new SchematronValidator(schema, null);
