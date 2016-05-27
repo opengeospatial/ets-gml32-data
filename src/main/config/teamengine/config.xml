@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Unpack the *-ctl-scripts.zip archive in the TE_BASE/scripts directory -->
-<!-- Add this entry to TE_BASE/config.xml (//organization/standard) -->
 <organization>
   <name>OGC</name>
   <standard>
-    <name>Conformance Test Suite - GML Documents</name>
+    <name>Geography Markup Language (GML) - Documents</name>
     <version>
       <name>${spec-version}</name>
       <suite>
         <namespace-uri>http://www.opengis.net/cite/gml32-data</namespace-uri>
         <prefix>tns</prefix>
         <local-name>ets-gml32-data-${version}</local-name>
-        <title>Test suite ets-gml32-data</title>
-        <description>Describe scope of testing.</description>
+        <title>GML Conformance Test Suite - Documents</title>
+        <description>Validates GML instance documents.</description>
       </suite>
       <revision>
         <name>${version}</name>

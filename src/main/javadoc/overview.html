@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
-    <title>Conformance Test Suite - GML Documents</title>
+    <title>GML Conformance Test Suite - Documents</title>
     <meta charset="UTF-8" />
     <style type="text/css">
 body {
@@ -54,11 +54,9 @@ dt {
     </style>
   </head>
   <body>
-  <h1>Conformance Test Suite - GML Documents</h1>
-	<p>This executable test suite (ETS) verifies the conformance of the implementation 
-	under test (IUT) with respect to all relevant specifications. Conformance testing 
-  is a kind of "black box" testing that examines externally visible characteristics 
-  or behaviors of the IUT and is independent of any implementation details.</p>
+  <h1>GML Conformance Test Suite - Documents</h1>
+	<p>This executable test suite (ETS) verifies the conformance of the instance 
+	under test (IUT) with respect to all relevant specifications.</p>
 
 	<p>The test run arguments are summarized in the following table. The <em>Obligation</em> 
 	descriptor can have the following values: M (mandatory), O (optional), or C 
@@ -75,19 +73,17 @@ dt {
       </tr>
       </thead>
 	  <tbody>
-      <tr>
-        <td>iut</td>
-        <td>URI</td>
-		<td>M</td>
-		<td>A URI that refers to the implementation under test or metadata about it.
-    Ampersand ('&amp;') characters must be percent-encoded as '%26'.</td>
-      </tr>
+    <tr>
+      <td>iut</td>
+      <td>URI</td>
+      <td>M</td>
+      <td>A URI referring to the instance document under test. Ampersand ('&amp;') characters must be percent-encoded as '%26'.</td>
+    </tr>
 	  <tr>
-      <td>ics</td>
-      <td>A comma-separated list of string values.</td>
+      <td>sch</td>
+      <td>URI</td>
       <td>O</td>
-      <td>An implementation conformance statement that indicates which conformance 
-      classes or options are supported.</td>
+      <td>A URI referring to a Schematron schema that defines supplementary constraints.</td>
     </tr>
 	  </tbody>
   </table>

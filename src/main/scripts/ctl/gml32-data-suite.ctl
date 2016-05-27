@@ -10,7 +10,7 @@
 		<ctl:param name="testRunArgs">A Document node containing test run arguments (as XML properties).</ctl:param>
     <ctl:param name="outputDir">The directory in which the test results will be written.</ctl:param>
 		<ctl:return>The test results as a Source object (root node).</ctl:return>
-		<ctl:description>Runs the gml32-data ${version} test suite.</ctl:description>
+		<ctl:description>Runs the GML 3.2 test suite for instance documents.</ctl:description>
     <ctl:code>
       <xsl:variable name="controller" select="tng:new($outputDir)" />
       <xsl:copy-of select="tng:doTestRun($controller, $testRunArgs)" />
@@ -18,8 +18,8 @@
 	</ctl:function>
 
    <ctl:suite name="tns:ets-gml32-data-${version}">
-     <ctl:title>Conformance Test Suite - GML Documents</ctl:title>
-     <ctl:description>Validates the content of a GML 3.2 instance document.</ctl:description>
+     <ctl:title>GML 3.2 Conformance Test Suite - Documents</ctl:title>
+     <ctl:description>Validates a GML 3.2 instance document.</ctl:description>
      <ctl:starting-test>tns:Main</ctl:starting-test>
    </ctl:suite>
  
@@ -28,7 +28,7 @@
 	  <ctl:code>
         <xsl:variable name="form-data">
            <ctl:form method="POST" width="800" height="600" xmlns="http://www.w3.org/1999/xhtml">
-             <h2>Conformance Test Suite - GML Documents</h2>
+             <h2>GML Conformance Test Suite - Documents</h2>
              <div style="background:#F0F8FF" bgcolor="#F0F8FF">
                <p>The instance under test (IUT) is checked against the following specifications:</p>
                <ul>
@@ -43,7 +43,7 @@
              <fieldset style="background:#ccffff">
                <legend style="font-family: sans-serif; color: #000099; 
 			                 background-color:#F0F8FF; border-style: solid; 
-                       border-width: medium; padding:4px">Implementation under test</legend>
+                       border-width: medium; padding:4px">Instance under test</legend>
                <p>
                  <label for="uri">
                    <h4 style="margin-bottom: 0.5em">Location of IUT (absolute http: or file: URI)</h4>
@@ -56,6 +56,12 @@
                  </label>
                  <input name="doc" id="doc" size="128" type="file" />
                </p>
+               <p>
+                 <label class="form-label" for="sch-uri">
+                   <h4 style="margin-bottom: 0.5em">Location of Schematron schema defining supplementary constraints (http: or file: URI)</h4>
+                 </label>
+                 <input id="sch-uri" name="sch-uri" size="128" type="text" value="" />
+               </p>
              </fieldset>
              <p>
                <input class="form-button" type="submit" value="Start"/> | 
@@ -64,9 +70,9 @@
            </ctl:form>
         </xsl:variable>
         <xsl:variable name="iut-file" select="$form-data//value[@key='doc']/ctl:file-entry/@full-path" />
-	      <xsl:variable name="test-run-props">
-		    <properties version="1.0">
-          <entry key="iut">
+        <xsl:variable name="test-run-props">
+		  <properties version="1.0">
+            <entry key="iut">
             <xsl:choose>
               <xsl:when test="empty($iut-file)">
                 <xsl:value-of select="normalize-space($form-data/values/value[@key='uri'])"/>
@@ -75,13 +81,13 @@
                 <xsl:copy-of select="concat('file:///', $iut-file)" />
               </xsl:otherwise>
             </xsl:choose>
-          </entry>
-          <entry key="ics"><xsl:value-of select="$form-data/values/value[@key='level']"/></entry>
-		    </properties>
-		   </xsl:variable>
-       <xsl:variable name="testRunDir">
-         <xsl:value-of select="tec:getTestRunDirectory($te:core)"/>
-       </xsl:variable>
+            </entry>
+            <entry key="sch"><xsl:value-of select="$form-data/values/value[@key='sch-uri']"/></entry>
+		  </properties>
+        </xsl:variable>
+        <xsl:variable name="testRunDir">
+          <xsl:value-of select="tec:getTestRunDirectory($te:core)"/>
+        </xsl:variable>
        <xsl:variable name="test-results">
         <ctl:call-function name="tns:run-ets-gml32-data">
 			    <ctl:with-param name="testRunArgs" select="$test-run-props"/>
